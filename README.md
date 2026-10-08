@@ -47,3 +47,7 @@ dotnet test MineEditor.Core.Tests
 
 Release builds are trimmed. If you bind a new collection or a `MineEditor.Core` type in XAML, check the page in a
 trimmed Release build; see `WinRTExposedTypes.cs`.
+
+## License
+
+Apache License 2.0. See [LICENSE](LICENSE).
