@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="MineEditor.Views.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:views="using:MineEditor.Views">
+
+    <Grid Padding="32,24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="MineEditor" Style="{StaticResource PageTitleStyle}" />
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8" Margin="0,0,0,24">
+            <Button Style="{StaticResource AccentButtonStyle}" Click="OnOpenFolderClick">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <SymbolIcon Symbol="OpenLocal" />
+                    <TextBlock Text="Open world folder…" />
+                </StackPanel>
+            </Button>
+            <Button Click="OnOpenFileClick">
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <SymbolIcon Symbol="OpenFile" />
+                    <TextBlock Text="Open NBT file…" />
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+        <TextBlock Grid.Row="2" Style="{StaticResource SubtitleTextBlockStyle}" Margin="0,0,0,4" Text="Your worlds" />
+
+        <Grid Grid.Row="3">
+            <TextBlock
+                x:Name="EmptyText"
+                Visibility="Collapsed"
+                Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                TextWrapping="Wrap"
+                Text="No worlds were found in the Minecraft launcher's saves folder. Use Open world folder to choose one." />
+
+            <ProgressRing x:Name="LoadingRing" IsActive="True" HorizontalAlignment="Left" VerticalAlignment="Top" />
+
+            <GridView
+                x:Name="Worlds"
+                Margin="-4,8,0,0"
+                SelectionMode="None"
+                IsItemClickEnabled="True"
+                ItemClick="OnWorldClick">
+                <GridView.ItemTemplate>
+                    <DataTemplate x:DataType="views:WorldCard">
+                        <Grid Width="320" Padding="12" ColumnSpacing="12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="64" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border Width="64" Height="64" CornerRadius="4" Background="{ThemeResource ControlFillColorSecondaryBrush}">
+                                <Image Source="{x:Bind Icon, Mode=OneWay}" Stretch="UniformToFill" />
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2">
+                                <TextBlock Text="{x:Bind Summary.Name}" Style="{StaticResource BodyStrongTextBlockStyle}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{x:Bind Details}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="{x:Bind Summary.FolderName}" Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorTertiaryBrush}" TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </GridView.ItemTemplate>
+            </GridView>
+        </Grid>
+    </Grid>
+</Page>

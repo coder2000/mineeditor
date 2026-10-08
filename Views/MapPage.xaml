@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="MineEditor.Views.MapPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:canvas="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    xmlns:world="using:MineEditor.Core.World"
+    NavigationCacheMode="Required">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.ColumnSpan="2" Padding="16,8" ColumnSpacing="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <ComboBox x:Name="DimensionPicker" MinWidth="180" AutomationProperties.Name="Dimension" SelectionChanged="OnDimensionChanged">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate x:DataType="world:Dimension">
+                        <TextBlock Text="{x:Bind DisplayName}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="4">
+                <Button Click="OnZoomOutClick" ToolTipService.ToolTip="Zoom out">
+                    <SymbolIcon Symbol="ZoomOut" />
+                </Button>
+                <Button Click="OnZoomInClick" ToolTipService.ToolTip="Zoom in">
+                    <SymbolIcon Symbol="ZoomIn" />
+                </Button>
+                <Button Click="OnCenterClick" ToolTipService.ToolTip="Center on spawn">
+                    <SymbolIcon Symbol="Home" />
+                </Button>
+                <ToggleButton x:Name="GridToggle" IsChecked="True" Click="OnGridToggled" ToolTipService.ToolTip="Show chunk grid when zoomed in">
+                    <FontIcon Glyph="&#xE80A;" FontSize="16" />
+                </ToggleButton>
+            </StackPanel>
+            <StackPanel x:Name="Progress" Grid.Column="3" Orientation="Horizontal" Spacing="8" Visibility="Collapsed">
+                <ProgressRing IsActive="True" Width="16" Height="16" />
+                <TextBlock x:Name="ProgressText" VerticalAlignment="Center" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <canvas:CanvasControl
+                x:Name="Canvas"
+                AutomationProperties.Name="World map. Drag to pan, scroll to zoom, click a chunk for details."
+                Draw="OnDraw"
+                CreateResources="OnCreateResources"
+                PointerPressed="OnPointerPressed"
+                PointerMoved="OnPointerMoved"
+                PointerReleased="OnPointerReleased"
+                PointerCanceled="OnPointerCanceled"
+                PointerExited="OnPointerExited"
+                PointerWheelChanged="OnPointerWheelChanged"
+                DoubleTapped="OnDoubleTapped" />
+
+            <Border Margin="12" Padding="10,6" HorizontalAlignment="Left" VerticalAlignment="Bottom" CornerRadius="4"
+                    Background="{ThemeResource AcrylicBackgroundFillColorDefaultBrush}" IsHitTestVisible="False">
+                <TextBlock x:Name="CursorText" FontFamily="{StaticResource CodeFontFamily}" FontSize="12" />
+            </Border>
+
+            <TextBlock x:Name="NoRegionsText" Visibility="Collapsed" HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Foreground="{ThemeResource TextFillColorSecondaryBrush}" Text="This dimension has no region files yet." />
+        </Grid>
+
+        <ScrollViewer x:Name="ChunkPanel" Grid.Row="1" Grid.Column="1" Width="320" Visibility="Collapsed"
+                      Background="{ThemeResource LayerFillColorDefaultBrush}"
+                      BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="1,1,0,0">
+            <StackPanel Padding="16" Spacing="12">
+                <Grid>
+                    <TextBlock x:Name="ChunkTitle" Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <Button HorizontalAlignment="Right" Click="OnCloseChunkPanelClick" Style="{StaticResource SubtleButtonStyle}"
+                            ToolTipService.ToolTip="Close">
+                        <SymbolIcon Symbol="Cancel" />
+                    </Button>
+                </Grid>
+                <ItemsControl x:Name="ChunkFacts">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="x:String">
+                            <TextBlock Text="{x:Bind}" TextWrapping="Wrap" IsTextSelectionEnabled="True" Margin="0,2" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Button x:Name="OpenChunkButton" HorizontalAlignment="Stretch" Style="{StaticResource AccentButtonStyle}" Click="OnOpenChunkClick">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <FontIcon Glyph="&#xE8A5;" FontSize="16" />
+                        <TextBlock Text="Edit chunk NBT" />
+                    </StackPanel>
+                </Button>
+                <Button x:Name="DeleteChunkButton" HorizontalAlignment="Stretch" Click="OnDeleteChunkClick">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <SymbolIcon Symbol="Delete" />
+                        <TextBlock Text="Delete chunk (regenerate)" />
+                    </StackPanel>
+                </Button>
+                <TextBlock Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" TextWrapping="Wrap"
+                           Text="Double-click a chunk to edit it. Deleting a chunk makes Minecraft generate it again from the seed; anything built there is lost." />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>

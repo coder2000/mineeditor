@@ -1,0 +1,18 @@
+# Build output
+bin/
+obj/
+AppPackages/
+BundleArtifacts/
+*.msix
+*.appx
+
+# IDE and per-user files
+.vs/
+*.user
+*.suo
+
+# Local package feed: keep the package itself so clones can restore, not its symbols
+packages/*.snupkg
+
+# Leftovers from an interrupted save
+*.mineeditor.tmp

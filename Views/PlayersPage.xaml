@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="MineEditor.Views.PlayersPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:MineEditor.Controls"
+    xmlns:views="using:MineEditor.Views"
+    xmlns:world="using:MineEditor.Core.World">
+
+    <Grid Padding="32,24,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.ColumnSpan="2" Text="Players" Style="{StaticResource PageTitleStyle}" />
+
+        <ListView x:Name="PlayerList" Grid.Row="1" SelectionChanged="OnPlayerSelected" Margin="-12,0,0,0">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="world:PlayerEntry">
+                    <Grid ColumnSpacing="12" Padding="0,8" ToolTipService.ToolTip="{x:Bind DisplayName}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <SymbolIcon Symbol="Contact" />
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="{x:Bind DisplayName}" TextTrimming="CharacterEllipsis" />
+                            <TextBlock Text="Host's copy, not used in singleplayer" Visibility="{x:Bind IsShadowedHost}"
+                                       Style="{StaticResource CaptionTextBlockStyle}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <TextBlock x:Name="EmptyText" Grid.Row="1" Visibility="Collapsed" TextWrapping="Wrap"
+                   Foreground="{ThemeResource TextFillColorSecondaryBrush}"
+                   Text="This world has no player data yet. It's created the first time someone joins." />
+
+        <ScrollViewer Grid.Row="1" Grid.Column="1" Padding="24,0,32,24">
+            <StackPanel x:Name="Details" Visibility="Collapsed" MaxWidth="860" HorizontalAlignment="Left">
+                <Grid Margin="0,0,0,16">
+                    <TextBlock x:Name="PlayerName" Style="{StaticResource SubtitleTextBlockStyle}" VerticalAlignment="Center" />
+                    <Button HorizontalAlignment="Right" Click="OnOpenInEditorClick">
+                        <StackPanel Orientation="Horizontal" Spacing="8">
+                            <FontIcon Glyph="&#xE8A5;" FontSize="16" />
+                            <TextBlock Text="Edit as NBT" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+                <InfoBar x:Name="ShadowedNotice" Severity="Informational" IsClosable="False" Margin="0,0,0,16"
+                         Title="Singleplayer uses the copy in level.dat"
+                         Message="This is the host's own player file. When the world is opened in singleplayer, the game loads the player from level.dat instead, so edit the Singleplayer entry. This file is only used when the world runs on a server or LAN." />
+
+                <controls:FieldForm x:Name="Form" />
+
+                <TextBlock Text="Inventory" Style="{StaticResource BodyStrongTextBlockStyle}" Margin="0,0,0,8" />
+                <Border Style="{StaticResource CardStyle}">
+                    <StackPanel>
+                        <TextBlock x:Name="InventoryEmpty" Text="Empty" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                        <ItemsControl x:Name="Inventory">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="views:InventoryItem">
+                                    <Grid ColumnSpacing="16" Padding="0,3">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="140" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{x:Bind Slot}" Foreground="{ThemeResource TextFillColorSecondaryBrush}" />
+                                        <TextBlock Grid.Column="1" Text="{x:Bind Id}" FontFamily="{StaticResource CodeFontFamily}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Grid.Column="2" Text="{x:Bind Count}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>
